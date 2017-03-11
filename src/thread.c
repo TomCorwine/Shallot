@@ -29,7 +29,7 @@ void *worker(void *params) { // life cycle of a cracking pthread
   uint8_t buf[SHA1_DIGEST_LEN],
           der[RSA_EXP_DER_LEN + 1], // TODO: is the size of this right?
           optimum = *(uint8_t*)params;
-  char onion[BASE32_ONIONLEN];
+  char onion[BASE32_ONIONLEN + 1];
   SHA_CTX hash, copy;
   RSA *rsa;
 
@@ -71,7 +71,13 @@ void *worker(void *params) { // life cycle of a cracking pthread
       base32_onion(onion, buf); // base32-encode SHA1 digest
       loop++;                   // keep track of our tries...
 
-      if(!regexec(regex, onion, 0, 0, 0)) { // check for a match
+      if(
+        regex
+        ?
+        (!regexec(regex, onion, 0, 0, 0))
+        :
+        (memcmp(prefix, onion, prefix_size) == 0)
+      ) { // check for a match
 
         // let our main thread know on which thread to wait
         lucky_thread = pthread_self();
@@ -128,7 +134,7 @@ void *worker(void *params) { // life cycle of a cracking pthread
 }
 
 void *monitor_proc(void *unused) {
-  fprintf(stderr,"\033[sPlease wait a moment for statistics...");
+  fprintf(stderr,"\033[sPlease wait a moment for statistics...\n");
   time_t start = time(NULL);
 
   for(;;) {
@@ -159,7 +165,7 @@ void *monitor_proc(void *unused) {
     if(!elapsed)
       continue; // be paranoid and avoid divide-by-zero exceptions
 
-    fprintf(stderr,"\033[u\033[KHashes: %-20"PRIu64"  Time: %-10d  Speed: %-"PRIu64"",
+    fprintf(stderr,"\033[u\033[KHashes: %-20"PRIu64"  Time: %-10d  Speed: %-"PRIu64"\n",
            loop, (int)elapsed, loop / elapsed);
 
   }
