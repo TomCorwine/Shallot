@@ -13,6 +13,7 @@
 // TODO: also put settings in a struct
 uint64_t loop, elim;
 uint8_t found, monitor, maxexectime;
+uint8_t continuous;
 pthread_t lucky_thread;
 regex_t *regex;
 char prefix[BASE32_ONIONLEN];
