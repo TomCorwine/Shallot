@@ -1,6 +1,9 @@
 Shallot
 =======
 
+DO NOT USE THIS VERSION. RECENT UPDATES BY ME MAY HAVE COMPROMISED KEY ENTROPY.
+DON’T USE UNTIL THIS MESSAGE IS GONE.
+
 About
 -----
 Shallot allows you to create customized .onion addresses for
